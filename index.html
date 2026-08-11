@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operational Excellence & Systems Transformation Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+        
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+        .ambient-bg {
+            background-color: #020617;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(14, 165, 233, 0.15), transparent 45%),
+                radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.1), transparent 40%),
+                radial-gradient(circle at 0% 50%, rgba(99, 102, 241, 0.08), transparent 40%);
+            background-attachment: fixed;
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+        }
+        
+        .card-glow-hover { transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-glow-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 0 25px -5px rgba(14, 165, 233, 0.25);
+            border-color: rgba(14, 165, 233, 0.45);
+            background: rgba(15, 23, 42, 0.85);
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        @media print {
+            body { background: #ffffff !important; color: #000000 !important; }
+            .glass-panel, header, #analyticsContainer, button, .sticky { background: none !important; border: 1px solid #ccc !important; color: #000 !important; box-shadow: none !important; position: static !important; }
+            h1, h2, h3, p, span { color: #000000 !important; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body class="ambient-bg text-slate-200 min-h-screen antialiased selection:bg-sky-500/30 selection:text-sky-200 relative pb-16">
+
+    <header class="glass-panel border-b border-white/10 sticky top-0 z-50 shadow-2xl shadow-black/60">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-5">
+            <div>
+                <div class="flex items-center gap-3 mb-1.5">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                        <span class="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse mr-2"></span> PMI Certified Portfolio
+                    </span>
+                    <span class="text-xs font-medium text-slate-400 border-l border-slate-800 pl-3">Cross-Industry Process Optimization</span>
+                </div>
+                <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-tight">
+                    Operational Excellence & <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-indigo-300 to-emerald-400">Systems Transformation</span>
+                </h1>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 w-full xl:w-auto">
+                <div class="bg-slate-900/60 border border-slate-800/80 rounded-xl p-3">
+                    <div class="text-[10px] uppercase tracking-widest text-slate-400 font-semibold mb-1">PMI Experience</div>
+                    <div class="text-sm font-bold text-white font-mono">37 Months <span class="text-emerald-400 text-xs font-sans font-medium ml-1">Active</span></div>
+                </div>
+                <div class="bg-slate-900/60 border border-slate-800/80 rounded-xl p-3">
+                    <div class="text-[10px] uppercase tracking-widest text-slate-400 font-semibold mb-1">Deliverables</div>
+                    <div class="text-sm font-bold text-white font-mono" id="projectCountDisplay">13 Projects</div>
+                </div>
+                <div class="bg-slate-900/60 border border-slate-800/80 rounded-xl p-3">
+                    <div class="text-[10px] uppercase tracking-widest text-slate-400 font-semibold mb-1">Space Optimized</div>
+                    <div class="text-sm font-bold text-white font-mono">38,000+ <span class="text-indigo-400 text-xs font-sans font-medium ml-1">sq ft</span></div>
+                </div>
+                <div class="bg-slate-900/60 border border-slate-800/80 rounded-xl p-3 flex items-center justify-between">
+                    <div>
+                        <div class="text-[10px] uppercase tracking-widest text-slate-400 font-semibold mb-1">On-Time Rate</div>
+                        <div class="text-sm font-bold text-amber-400 font-mono">100% Success</div>
+                    </div>
+                    <div class="flex gap-1 no-print">
+                        <button onclick="window.print()" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition" title="Print Executive Summary">
+                            <i data-lucide="printer" class="w-4 h-4"></i>
+                        </button>
+                        <button onclick="openBuilder()" class="p-2 bg-sky-900/50 hover:bg-sky-800 text-sky-300 border border-sky-500/30 rounded-lg transition" title="Author Mode (Add Project)">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-8 relative">
+        <div class="sticky top-[100px] z-40 mb-8 no-print">
+            <div class="glass-panel p-2.5 rounded-2xl flex flex-col md:flex-row gap-3 items-stretch md:items-center shadow-2xl">
+                <div class="relative flex-1 min-w-[240px]">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="searchInput" placeholder="Search title, framework, skills (e.g. CAD, Lean)..." 
+                        class="w-full bg-slate-950/60 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-sky-500 transition">
+                </div>
+                <div class="flex-1 overflow-x-auto no-scrollbar">
+                    <div class="flex items-center gap-1.5 w-max px-1" id="categoryFilters"></div>
+                </div>
+                <div class="flex items-center gap-1 bg-slate-950/80 p-1 rounded-xl border border-slate-800 shrink-0">
+                    <button id="gridViewBtn" onclick="toggleView('grid')" class="p-2 rounded-lg bg-sky-500/20 text-sky-400 transition" title="Grid View"><i data-lucide="layout-grid" class="w-4 h-4"></i></button>
+                    <button id="timelineViewBtn" onclick="toggleView('timeline')" class="p-2 rounded-lg text-slate-400 hover:text-white transition" title="Timeline View"><i data-lucide="git-commit" class="w-4 h-4"></i></button>
+                </div>
+            </div>
+            <div id="activeTagFilterBar" class="hidden mt-2 flex items-center gap-2 text-xs text-slate-400 px-2">
+                <span>Filtering by Tag:</span>
+                <span id="activeTagName" class="px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 font-mono font-bold border border-sky-500/30"></span>
+                <button onclick="clearTagFilter()" class="text-slate-500 hover:text-white underline text-[11px]">Clear Filter</button>
+            </div>
+        </div>
+        <div id="projectContainer"></div>
+    </main>
+
+    <!-- Project Case Study Modal -->
+    <div id="projectModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-[60] hidden flex flex-col items-center justify-end md:justify-center p-0 md:p-6 opacity-0 transition-opacity duration-300">
+        <div class="bg-slate-900 border border-white/10 rounded-t-3xl md:rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col relative shadow-[0_0_60px_-15px_rgba(0,0,0,1)] transform translate-y-6 transition-transform duration-300 overflow-hidden" id="modalWindow">
+            <div class="p-6 border-b border-slate-800 flex justify-between items-start gap-4 bg-slate-900/95 backdrop-blur-md z-10">
+                <div>
+                    <div id="modalMeta" class="mb-2 flex flex-wrap gap-2"></div>
+                    <h2 id="modalTitle" class="text-xl md:text-2xl font-bold text-white leading-tight"></h2>
+                </div>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-white bg-slate-800 p-2 rounded-xl transition shrink-0"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="flex border-b border-slate-800 bg-slate-950/50 px-6 gap-6 text-xs font-semibold">
+                <button onclick="switchTab('overview')" id="tab-overview" class="py-3 border-b-2 border-sky-500 text-sky-400 transition">Case Study Overview</button>
+                <button onclick="switchTab('methodology')" id="tab-methodology" class="py-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition">Methodology & Execution</button>
+                <button onclick="switchTab('metrics')" id="tab-metrics" class="py-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition">Metrics & Skills</button>
+            </div>
+            <div class="p-6 md:p-8 overflow-y-auto flex-1" id="modalTabContent"></div>
+        </div>
+    </div>
+
+    <!-- Website Builder Tool (Author Mode) -->
+    <div id="builderModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[70] hidden flex flex-col items-center justify-center p-4 opacity-0 transition-opacity">
+        <div class="bg-slate-900 border border-sky-500/30 rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col relative shadow-2xl overflow-hidden">
+            <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950">
+                <h2 class="text-lg font-bold text-white flex items-center gap-2"><i data-lucide="hammer" class="w-5 h-5 text-sky-400"></i> Project Builder Tool</h2>
+                <button onclick="closeBuilder()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto flex-1 space-y-4" id="builderFormArea">
+                <p class="text-xs text-sky-300 bg-sky-900/20 p-3 rounded-lg border border-sky-500/20">
+                    <strong>Note:</strong> Fill this out to preview your project. Because GitHub Pages has no database, you will be given a block of code at the end to paste into your GitHub file to make the update permanent.
+                </p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="text-[10px] text-slate-400 uppercase">Project Title</label><input type="text" id="b-title" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-sm text-white mt-1"></div>
+                    <div><label class="text-[10px] text-slate-400 uppercase">Category</label>
+                        <select id="b-cat" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-sm text-white mt-1">
+                            <option>Systems Consolidation</option><option>Process Optimization</option><option>Supply Chain & Logistics</option><option>Infrastructure Upgrades</option><option>Quality & R&D</option>
+                        </select>
+                    </div>
+                    <div><label class="text-[10px] text-slate-400 uppercase">Timeline (e.g. Aug 2026 - Dec 2026)</label><input type="text" id="b-time" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-sm text-white mt-1"></div>
+                    <div><label class="text-[10px] text-slate-400 uppercase">Metric Highlight (e.g. 50% Faster)</label><input type="text" id="b-metric" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-sm text-white mt-1"></div>
+                    <div><label class="text-[10px] text-slate-400 uppercase">Tags (comma separated)</label><input type="text" id="b-tags" placeholder="AutoCAD, Lean, Kanban" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-sm text-white mt-1"></div>
+                    <div><label class="text-[10px] text-slate-400 uppercase">Image Filenames (comma separated)</label><input type="text" id="b-images" placeholder="layout.jpg, process.png" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-sm text-white mt-1"></div>
+                </div>
+                <div><label class="text-[10px] text-slate-400 uppercase">Objective</label><textarea id="b-obj" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-sm text-white mt-1 h-16"></textarea></div>
+                <div><label class="text-[10px] text-slate-400 uppercase">Your Role & Methodology</label><textarea id="b-role" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-sm text-white mt-1 h-20"></textarea></div>
+                <div><label class="text-[10px] text-slate-400 uppercase">Outcome</label><textarea id="b-out" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-sm text-white mt-1 h-16"></textarea></div>
+                
+                <button onclick="generateProjectCode()" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 rounded-lg transition mt-4">Preview & Generate GitHub Code</button>
+            </div>
+
+            <!-- Results Output Area -->
+            <div class="p-6 hidden flex-1 flex-col" id="builderCodeArea">
+                <h3 class="text-emerald-400 font-bold flex items-center gap-2 mb-2"><i data-lucide="check-circle" class="w-5 h-5"></i> Project Temporarily Added!</h3>
+                <p class="text-sm text-slate-300 mb-4">You can now close this window to see how it looks on your live site. <br><br><strong class="text-amber-400">CRITICAL NEXT STEP:</strong> To make this permanent, copy the code below and paste it over your existing <code>const projects = [...]</code> array in GitHub.</p>
+                <textarea id="generatedCode" class="w-full flex-1 bg-slate-950 border border-slate-700 text-sky-300 font-mono text-xs p-4 rounded-lg outline-none" readonly></textarea>
+                <div class="flex gap-4 mt-4">
+                    <button onclick="copyGeneratedCode()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg transition">Copy Code to Clipboard</button>
+                    <button onclick="closeBuilder()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 rounded-lg transition">Close & View Site</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const categories = ["All", "Systems Consolidation", "Process Optimization", "Supply Chain & Logistics", "Infrastructure Upgrades", "Quality & R&D"];
+
+        let projects = [
+            {
+                id: 1,
+                title: "Pull-System Implementation - Inventory Control Protocol",
+                category: "Supply Chain & Logistics",
+                timeline: "Oct 2022 – Apr 2023",
+                metricHighlight: "56% Footprint Reduction • $15k+ Savings",
+                tags: ["Kanban", "Value Stream Mapping", "WBS", "Safety Compliance"],
+                images: [], 
+                objective: "To design and implement a pull-based Kanban replenishment system that optimizes raw material inventory.",
+                role: "Managed this project end-to-end, applying predictive project management principles. Audited inventory metrics and consulted floor supervisors to define scope.",
+                outcome: "Delivered on schedule, achieving a 56% footprint reduction and over $15,000 in savings."
+            },
+            {
+                id: 2,
+                title: "Core Warehouse Optimization & Standardization",
+                category: "Supply Chain & Logistics",
+                timeline: "Dec 2022 – Jun 2023",
+                metricHighlight: "3D CAD Layout • Standardized Racking",
+                tags: ["AutoCAD", "Racking Systems", "Capacity Planning", "WBS"],
+                images: [],
+                objective: "To eliminate severe operational bottlenecks and standardize inventory tracking across the main warehouse.",
+                role: "Engineered CAD layouts, built the WBS, and handled material procurement. Supervised installation contractors and controlled budgets.",
+                outcome: "Delivered on schedule, establishing a safe warehouse facility with streamlined tracking."
+            }
+        ];
+
+        let activeCategory = 'All';
+        let activeTagFilter = null;
+        let currentView = 'grid';
+        let activeModalProject = null;
+
+        function initializeFilters() {
+            const filterContainer = document.getElementById('categoryFilters');
+            filterContainer.innerHTML = categories.map(cat => 
+                `<button onclick="filterCategory('${cat}')" data-cat="${cat}" class="cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border ${cat === 'All' ? 'bg-sky-500/20 text-sky-400 border-sky-500/50' : 'bg-slate-900/50 text-slate-400 border-slate-800 hover:bg-slate-800 hover:text-slate-200'}">${cat}</button>`
+            ).join('');
+            document.getElementById('projectCountDisplay').innerHTML = `${projects.length} Projects <span class="text-sky-400 text-xs font-sans font-medium ml-1">Completed</span>`;
+        }
+
+        function filterByTag(tagName) {
+            activeTagFilter = tagName;
+            document.getElementById('activeTagFilterBar').classList.remove('hidden');
+            document.getElementById('activeTagName').innerText = tagName;
+            renderProjects();
+        }
+
+        function clearTagFilter() {
+            activeTagFilter = null;
+            document.getElementById('activeTagFilterBar').classList.add('hidden');
+            renderProjects();
+        }
+
+        function renderProjects() {
+            const container = document.getElementById('projectContainer');
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+
+            const filtered = projects.filter(p => {
+                const matchesCat = activeCategory === 'All' || p.category === activeCategory;
+                const matchesTag = !activeTagFilter || p.tags.includes(activeTagFilter);
+                const matchesSearch = p.title.toLowerCase().includes(searchQuery) || p.objective.toLowerCase().includes(searchQuery) || p.tags.some(t => t.toLowerCase().includes(searchQuery));
+                return matchesCat && matchesTag && matchesSearch;
+            });
+
+            if (currentView === 'grid') {
+                container.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6";
+                container.innerHTML = filtered.map(p => `
+                    <div class="glass-panel rounded-2xl p-6 card-glow-hover flex flex-col justify-between group relative overflow-hidden">
+                        <div>
+                            <div class="flex items-center justify-between gap-2 mb-3">
+                                <span class="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-sky-400">${p.category}</span>
+                                <span class="text-[11px] text-slate-400 font-mono">${p.timeline}</span>
+                            </div>
+                            <h3 onclick="openModal(${p.id})" class="font-bold text-base text-white group-hover:text-sky-300 transition cursor-pointer line-clamp-2 mb-2 leading-snug">${p.title}</h3>
+                            <p class="text-xs text-slate-400 line-clamp-2 mb-4 leading-relaxed font-light">${p.objective}</p>
+                            <div class="flex flex-wrap gap-1.5 mb-4">
+                                ${p.tags.map(t => `<button onclick="filterByTag('${t}')" class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-sky-300 hover:border-sky-500/40 transition">${t}</button>`).join('')}
+                            </div>
+                        </div>
+                        <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs mt-auto">
+                            <span class="font-semibold text-emerald-400 truncate max-w-[200px] flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span> ${p.metricHighlight}</span>
+                            <button onclick="openModal(${p.id})" class="text-slate-400 group-hover:text-white font-medium flex items-center gap-0.5 text-[11px] shrink-0">Case Study <i data-lucide="arrow-right" class="w-3 h-3 group-hover:translate-x-1 transition"></i></button>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                container.className = "relative border-l border-slate-800 ml-4 md:ml-8 space-y-8 pl-6 md:pl-10";
+                container.innerHTML = filtered.map(p => `
+                    <div class="relative group">
+                        <div class="absolute -left-[31px] md:-left-[47px] top-1.5 w-3.5 h-3.5 rounded-full bg-slate-950 border-2 border-sky-400 group-hover:bg-sky-400 transition"></div>
+                        <div class="glass-panel rounded-xl p-5 hover:border-sky-500/40 transition">
+                            <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-2">
+                                <span class="text-xs font-mono font-semibold text-sky-400">${p.timeline}</span>
+                                <span class="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-slate-300 w-fit">${p.category}</span>
+                            </div>
+                            <h3 onclick="openModal(${p.id})" class="text-base font-bold text-white hover:text-sky-300 transition cursor-pointer mb-1">${p.title}</h3>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            lucide.createIcons();
+        }
+
+        function filterCategory(cat) {
+            activeCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.className = btn.getAttribute('data-cat') === cat ? 'cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border bg-sky-500/20 text-sky-400 border-sky-500/50' : 'cat-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border bg-slate-900/50 text-slate-400 border-slate-800 hover:bg-slate-800 hover:text-slate-200';
+            });
+            renderProjects();
+        }
+
+        function toggleView(view) {
+            currentView = view;
+            renderProjects();
+        }
+
+        function openModal(id) {
+            activeModalProject = projects.find(p => p.id === id);
+            const modal = document.getElementById('projectModal');
+            document.getElementById('modalMeta').innerHTML = `<span class="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20">${activeModalProject.category}</span><span class="text-xs text-slate-400 font-mono">${activeModalProject.timeline}</span>`;
+            document.getElementById('modalTitle').innerText = activeModalProject.title;
+            switchTab('overview');
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0'); document.getElementById('modalWindow').classList.remove('translate-y-6'); }, 10);
+            document.body.style.overflow = 'hidden';
+            lucide.createIcons();
+        }
+
+        function switchTab(tabName) {
+            ['overview', 'methodology', 'metrics'].forEach(t => {
+                document.getElementById(`tab-${t}`).className = t === tabName ? 'py-3 border-b-2 border-sky-500 text-sky-400 transition' : 'py-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition';
+            });
+            const content = document.getElementById('modalTabContent');
+            const p = activeModalProject;
+
+            let galleryHTML = '';
+            if (p.images && p.images.length > 0) {
+                galleryHTML = `
+                    <div class="mt-6">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2"><i data-lucide="image" class="w-4 h-4"></i> Project Media</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            ${p.images.map(img => `<img src="${img}" alt="Project Image" class="w-full h-48 object-cover rounded-xl border border-slate-700 shadow-lg hover:scale-[1.02] transition-transform cursor-pointer">`).join('')}
+                        </div>
+                    </div>`;
+            }
+
+            if (tabName === 'overview') {
+                content.innerHTML = `
+                    <div class="space-y-6">
+                        <div class="bg-slate-950/60 p-5 rounded-2xl border border-slate-800">
+                            <h4 class="font-bold text-white mb-2 flex items-center gap-2 text-xs uppercase tracking-wider"><i data-lucide="target" class="w-4 h-4 text-sky-400"></i> Strategic Objective</h4>
+                            <p class="text-sm text-slate-300 leading-relaxed font-light">${p.objective}</p>
+                        </div>
+                        <div class="bg-emerald-950/20 p-5 rounded-2xl border border-emerald-900/40">
+                            <h4 class="font-bold text-emerald-400 mb-2 flex items-center gap-2 text-xs uppercase tracking-wider"><i data-lucide="award" class="w-4 h-4"></i> Quantifiable Outcome</h4>
+                            <p class="text-sm font-semibold text-white leading-relaxed">${p.outcome}</p>
+                        </div>
+                        ${galleryHTML}
+                    </div>
+                `;
+            } else if (tabName === 'methodology') {
+                content.innerHTML = `<div class="bg-slate-950/60 p-6 rounded-2xl border border-slate-800 leading-relaxed"><p class="text-sm text-slate-300 leading-relaxed font-light">${p.role}</p></div>`;
+            } else if (tabName === 'metrics') {
+                content.innerHTML = `<div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800"><span class="text-[10px] uppercase font-semibold text-slate-400">Core Metric Highlight</span><p class="text-base font-mono font-bold text-sky-400 mt-1">${p.metricHighlight}</p></div>`;
+            }
+            lucide.createIcons();
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('projectModal');
+            modal.classList.add('opacity-0');
+            document.getElementById('modalWindow').classList.add('translate-y-6');
+            setTimeout(() => { modal.classList.add('hidden'); document.body.style.overflow = 'auto'; }, 300);
+        }
+
+        function openBuilder() {
+            const modal = document.getElementById('builderModal');
+            document.getElementById('builderFormArea').classList.remove('hidden');
+            document.getElementById('builderCodeArea').classList.add('hidden');
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0'); }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeBuilder() {
+            const modal = document.getElementById('builderModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => { modal.classList.add('hidden'); document.body.style.overflow = 'auto'; }, 300);
+        }
+
+        function generateProjectCode() {
+            const newProj = {
+                id: projects.length + 1,
+                title: document.getElementById('b-title').value,
+                category: document.getElementById('b-cat').value,
+                timeline: document.getElementById('b-time').value,
+                metricHighlight: document.getElementById('b-metric').value,
+                tags: document.getElementById('b-tags').value.split(',').map(t => t.trim()).filter(t => t),
+                images: document.getElementById('b-images').value.split(',').map(i => i.trim()).filter(i => i),
+                objective: document.getElementById('b-obj').value,
+                role: document.getElementById('b-role').value,
+                outcome: document.getElementById('b-out').value
+            };
+
+            projects.push(newProj);
+            initializeFilters();
+            renderProjects();
+
+            const codeString = `let projects = ` + JSON.stringify(projects, null, 4) + `;`;
+            document.getElementById('generatedCode').value = codeString;
+            
+            document.getElementById('builderFormArea').classList.add('hidden');
+            document.getElementById('builderCodeArea').classList.remove('hidden');
+            document.getElementById('builderCodeArea').classList.add('flex');
+        }
+
+        function copyGeneratedCode() {
+            const copyText = document.getElementById('generatedCode');
+            copyText.select();
+            document.execCommand("copy");
+            alert("Code copied to clipboard! Open your index.html file in GitHub, find the 'let projects = [...]' section, and paste this over it to save permanently.");
+        }
+
+        document.getElementById('searchInput').addEventListener('input', renderProjects);
+        initializeFilters();
+        renderProjects();
+    </script>
+</body>
+</html>
